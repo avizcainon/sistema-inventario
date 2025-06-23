@@ -2,10 +2,19 @@
     <div class="col-md-12">
         
         <div class="form-group mb-2 mb20">
-            <label for="id_cliente" class="form-label">{{ __('Buscar Cliente') }}</label>
-            <input type="text" id="buscador_cliente" class="form-control @error('id_cliente') is-invalid @enderror" value="{{ old('id_cliente', $factura?->id_cliente) }}"  placeholder="Buscar por DNI, Nombre">
+            <label for="id_cliente" class="form-label">{{ __('Buscar Cliente') }} </label>
+            <div id="loading-message">
+                <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+
+                            </div>
+            <input type="text" id="buscador_cliente" class="form-control @error('id_cliente') is-invalid @enderror" value="{{ old('id_cliente', $factura?->id_cliente) }}" autocomplete="off" placeholder="Buscar por DNI, Nombre">
             {!! $errors->first('id_cliente', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
-        <input type="text" name="id_cliente" id="id_cliente" value="{{ old('id_cliente', $factura?->id_cliente) }}">
+            <input type="hidden" name="id_cliente" id="id_cliente" value="{{ old('id_cliente', $factura?->id_cliente) }}">
+        
+           
+        </div>
         </div>
         
         <div class="form-group mb-2 mb20">
@@ -54,6 +63,6 @@
 
     </div>
     <div class="col-md-12 mt20 mt-2">
-        <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+        <button type="submit" class="btn btn-outline-primary">{{ __('Submit') }}</button>
     </div>
 </div>

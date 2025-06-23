@@ -3,12 +3,32 @@
         
      <div class="form-group mb-2 mb20">
             <label for="imagen_producto" class="form-label">{{ __('Imagen Producto') }}</label>
-            <input type="file" name="imagen_producto" class="form-control @error('imagen_producto') is-invalid @enderror" value="{{ old('imagen_producto', $producto?->imagen_producto) }}" id="imagen_producto" placeholder="Imagen Producto">
+            <input type="file" name="imagen_producto" class="form-control @error('imagen_producto') is-invalid @enderror" value="{{ old('imagen_producto', $producto?->imagen_producto) }}" id="imagen_producto_file" placeholder="Imagen Producto">
             {!! $errors->first('imagen_producto', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
-        @if ($producto->imagen_producto)
-            <img src="{{ asset('imagenes/' . $producto->imagen_producto) }}" id="imagen_producto" alt="Imagen producto" width="100">
-        @endif    
+        <div>
+            @if ($producto->imagen_producto)
+                                @if(str_starts_with($producto->imagen_producto, 'https') || str_starts_with($producto->imagen_producto, 'http'))
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalProducto{{ $producto->codigo_producto }}">
+                                    <img src="{{ $producto->imagen_producto }}" class="rounded float-start" id="imagen_producto" alt="Imagen producto" width="100">
+                                </a>    
+                                
+                                @else
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalProducto{{ $producto->codigo_producto }}">
+                                        <img src="{{ asset('imagenes/' . $producto->imagen_producto) }}" class="rounded float-start" id="imagen_producto" alt="Imagen producto" width="100">
+                                    </a>
+                                    
+                                @endif              
+                            @else
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalProducto{{ $producto->codigo_producto }}">
+                                <img src="{{ asset('imagenes/producto-generico.webp' ) }}" class="rounded float-start" id="imagen_producto" alt="Imagen producto" width="100">
+                            </a>
+                                
+                            @endif 
+
+
+        </div>
+         
     <div class="form-group mb-2 mb20">
             <label for="codigo_producto" class="form-label">{{ __('Codigo Producto') }}</label>
             <input type="text" name="codigo_producto" class="form-control @error('codigo_producto') is-invalid @enderror" value="{{ old('codigo_producto', $producto?->codigo_producto) }}" id="codigo_producto" placeholder="Codigo Producto">
@@ -42,7 +62,7 @@
        
             
         <div class="form-group mb-2 mb20">
-            <label for="id_status_producto" class="form-label">{{ __('Id Status Producto') }}</label>
+            <label for="id_status_producto" class="form-label">{{ __('Status Producto') }}</label>
             <select class="form-select" aria-label="Status del producto" name="id_status_producto">
                 
                  @foreach ($status_productos as $status)
@@ -55,6 +75,21 @@
 
     </div>
     <div class="col-md-12 mt20 mt-2">
-        <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+        <button type="submit" class="btn btn-outline-primary">{{ __('Submit') }}</button>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(e){
+
+        $('#imagen_producto_file').change(function(){
+
+            let reader = new FileReader();
+            reader.onload = (e)=>{
+                $('#imagen_producto').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
+});
+</script>

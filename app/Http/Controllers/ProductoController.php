@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ProductoRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log; 
 
 class ProductoController extends Controller
@@ -45,18 +47,34 @@ class ProductoController extends Controller
      */
     public function store(ProductoRequest $request): RedirectResponse
     {
-        $request->validated();
-        $producto = $request->all();
+        // Iniciar una transacción de base de datos para asegurar la atomicidad
+        // Si algo falla (DB o archivo), todo se revierte.
+        DB::beginTransaction();
+        try {
+            $request->validated();
+            $producto = $request->all();
 
-        if($imagenProductoForm = $request->file('imagen_producto')){
-            $rutaGuardar = 'imagenes/';
-            $nombreImagenProducto = date('YmdHis').".".$imagenProductoForm->getClientOriginalExtension();
-            
-            $producto['imagen_producto'] = $nombreImagenProducto;
+            if($imagenProductoForm = $request->file('imagen_producto')){
+                $rutaGuardar = 'imagenes/';
+                $nombreImagenProducto = date('YmdHis').".".$imagenProductoForm->getClientOriginalExtension();
+                
+                $producto['imagen_producto'] = $nombreImagenProducto;
+            }else {
+                $producto['imagen_producto'] = 'producto-generico.webp';
+            }
+            if (Producto::create($producto)) {
+                $imagenProductoForm->move($rutaGuardar,$nombreImagenProducto);
+            }
+
+             // 4. Confirmar la transacción si todas las operaciones fueron exitosas
+            DB::commit();
+
+            Log::info("Producto actualizado exitosamente.");
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $th->getMessage()]);
         }
-        if (Producto::create($producto)) {
-            $imagenProductoForm->move($rutaGuardar,$nombreImagenProducto);
-        }
+        
         
 
         return Redirect::route('productos.index')
@@ -78,8 +96,13 @@ class ProductoController extends Controller
      */
     public function edit($id): View
     {
-        $producto = Producto::find($id);
-        $status_productos = StatusProducto::All();
+        try {
+            $producto = Producto::find($id);
+            $status_productos = StatusProducto::All();
+        } catch (\Throwable $th) {
+             return back()->withErrors(['error' => $th->getMessage()]);
+        }
+        
 
         return view('producto.edit', compact('producto','status_productos'));
     }
@@ -89,10 +112,72 @@ class ProductoController extends Controller
      */
     public function update(ProductoRequest $request, Producto $producto): RedirectResponse
     {
-        $producto->update($request->validated());
+        // Iniciar una transacción de base de datos para asegurar la atomicidad
+        // Si algo falla (DB o archivo), todo se revierte.
+        DB::beginTransaction();
 
-        return Redirect::route('productos.index')
-            ->with('success', 'Producto updated successfully');
+        try {
+            // Validar los datos del formulario y obtener solo los datos validados
+            $validatedData = $request->validated();
+            Log::info('Datos validados para actualización:', $validatedData);
+
+            // Manejo de la imagen del producto
+            if ($request->hasFile('imagen_producto')) {
+                $imagenProductoForm = $request->file('imagen_producto');
+                $rutaGuardar = 'imagenes/'; // Ruta relativa a 'public'
+                $nombreImagenProducto = date('YmdHis') . "." . $imagenProductoForm->getClientOriginalExtension();
+
+                // Almacenar el nuevo nombre de la imagen en los datos validados
+                $validatedData['imagen_producto'] = $nombreImagenProducto;
+
+                // 1. Eliminar la imagen antigua si existe y si no es la imagen por defecto
+                // Asegúrate de que 'producto-generico.webp' es tu imagen por defecto y no debe ser borrada.
+                if ($producto->imagen_producto && $producto->imagen_producto != 'producto-generico.webp') {
+                    $oldImagePath = public_path('imagenes/' . $producto->imagen_producto);
+                    if (File::exists($oldImagePath)) {
+                        File::delete($oldImagePath);
+                        Log::info('Imagen antigua eliminada: ' . $oldImagePath);
+                    } else {
+                        Log::warning('Imagen antigua no encontrada para eliminar: ' . $oldImagePath);
+                    }
+                }
+
+                // 2. Mover la nueva imagen al disco
+                $imagenProductoForm->move(public_path($rutaGuardar), $nombreImagenProducto);
+                Log::info('Nueva imagen subida: ' . $nombreImagenProducto);
+
+            } else {
+                //si no tiene imagen desde el formulario, se deja la misma que estaba guardada
+                 if (!isset($validatedData['imagen_producto'])) { 
+                     $validatedData['imagen_producto'] = $producto->imagen_producto; 
+                 }
+                 
+            }
+
+            // 3. Actualizar el registro del producto en la base de datos
+            // El método update() en el modelo $producto (ya una instancia) utiliza los datos validados.
+            $producto->update($validatedData);
+
+            // 4. Confirmar la transacción si todas las operaciones fueron exitosas
+            DB::commit();
+
+            Log::info('Producto actualizado exitosamente.', ['producto_id' => $producto->id]);
+
+            // Redirigir al índice de productos con un mensaje de éxito
+            return Redirect::route('productos.index')
+                ->with('success', 'Producto actualizado exitosamente.');
+
+        } catch (\Exception $e) { // Capturar cualquier tipo de excepción
+            // Revertir la transacción si ocurre un error
+            DB::rollBack();
+            Log::error('Error al actualizar producto: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all() // Incluir datos del request para depuración
+            ]);
+
+            // Redirigir de vuelta con un mensaje de error y mantener los datos de entrada
+            return back()->withInput()->with('error', 'Error al actualizar producto: ' . $e->getMessage());
+        }
     }
 
     public function destroy($id): RedirectResponse
@@ -108,47 +193,40 @@ class ProductoController extends Controller
      */
     public function buscar(Request $request)
     {
-        // 1. Obtener el término de búsqueda enviado por AJAX.
-        // Tu jQuery envía el dato como 'term' en la propiedad 'data'.
-        $searchTerm = $request->input('term');
-        $front = $request->front;
 
-        Log::info("********************************************* Valor de entrada para búsqueda: {$searchTerm}");
-        Log::info("********************************************* Valor de entrada para búsqueda: {$front}");
-        // 2. Realizar la consulta a la base de datos para buscar productos.
-        // Si el término de búsqueda está vacío, devuelve una colección vacía.
-        if (empty($searchTerm)) {
-            $productos = collect(); // Devuelve una colección vacía
-        } else {
-            switch ($front) {
-                case 'productos':
-                    $productos = Producto::with('statusProducto')
-                                 ->where('productos.codigo_producto', 'LIKE', '%' . $searchTerm . '%') // Asumiendo que la columna a buscar es 'name'
-                                 // Opcional: Si quieres buscar en más columnas:
-                                 ->orWhere('productos.descripcion_producto', 'LIKE', '%' . $searchTerm . '%')
-                                 ->paginate();  
-                    break;
-                
-                case 'facturas':
-                   $productos = Producto::with('statusProducto')
-                                ->where('productos.id_status_producto', 1)
-                                ->where(function ($query) use ($searchTerm) { // <--- ¡Esto agrupa las condiciones OR!
-                                    $query->where('productos.codigo_producto', 'LIKE', '%' . $searchTerm . '%')
-                                    ->orWhere('productos.descripcion_producto', 'LIKE', '%' . $searchTerm . '%');
-                                })
-                                ->paginate(); 
-                    break;
-            }
-            // Usamos 'where' con 'LIKE' para buscar el término dentro de la columna 'name'.
-            // También cargamos la relación 'statusProducto' con 'with()'.
+        try {
+            $searchTerm = $request->input('term');
+            $front = $request->front;
             
+            if (empty($searchTerm)) {
+                $productos = collect(); 
+            } else {
+                switch ($front) {
+                    case 'productos':
+                        $productos = Producto::with('statusProducto')
+                                    ->where(function ($query) use ($searchTerm) { // <--- ¡Esto agrupa las condiciones OR!
+                                        $query->where('productos.codigo_producto', 'LIKE', '%' . $searchTerm . '%')
+                                        ->orWhere('productos.descripcion_producto', 'LIKE', '%' . $searchTerm . '%');
+                                    })->get();  
+                        break;
+                    
+                    case 'facturas':
+                    $productos = Producto::with('statusProducto')
+                                    ->where('productos.id_status_producto', 1)
+                                    ->where(function ($query) use ($searchTerm) { // <--- ¡Esto agrupa las condiciones OR!
+                                        $query->where('productos.codigo_producto', 'LIKE', '%' . $searchTerm . '%')
+                                        ->orWhere('productos.descripcion_producto', 'LIKE', '%' . $searchTerm . '%');
+                                    })
+                                    ->get(); 
+                        break;
+                }
+
+                
+            }
+        } catch (\Throwable $th) {
+            return back()->withErrors(['error' => $th->getMessage()]);
         }
-
-        // 3. Devolver una vista (fragmento HTML) con los resultados.
-        // Esto es CRÍTICO porque tu jQuery espera HTML (`.html(response)`).
-        // Necesitarás crear este archivo Blade: `resources/views/productos/search_results.blade.php`.
-
-        
+   
         return view('producto.item_producto', compact('productos','front'));
     }
 

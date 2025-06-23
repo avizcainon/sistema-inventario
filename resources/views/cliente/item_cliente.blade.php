@@ -8,7 +8,7 @@
             <tr>
                 <th>No</th>
                                             
-                <th >Dni</th>
+                <th class="color-secundario">Dni</th>
                 <th >Nombre</th>
                 <th >Apellido</th>
                 <th >Telefono</th>

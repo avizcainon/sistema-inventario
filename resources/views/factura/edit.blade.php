@@ -9,8 +9,8 @@
         <div class="">
             <div class="col-md-12">
 
-                <div class="card card-default">
-                    <div class="card-header">
+                <div class="card card-default color-secundario">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="card-title">{{ __('Update') }} Factura</span>
                     </div>
                     <div class="card-body bg-white">

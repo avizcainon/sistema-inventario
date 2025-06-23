@@ -6,18 +6,19 @@
         <thead class="thead">
             <tr>
                                       
-                <th >Imagen </th>  
-                <th >Codigo </th>
-                <th >Descripcion</th>
-                <th >Cantidad</th>
+                <th>Imagen </th>  
+                <th>Codigo </th>
+                <th>Descripcion</th>
+                <th>Cantidad</th>
                 @if (Auth::user()->id_user_type == 1)
-                    <th >Monto Compra</th>
+                    <th>Monto Compra</th>
                 @endif
                                         
-                <th >Monto Venta</th>
-                <th >Medida</th>
-                <th >Status</th>
+                <th>Monto Venta</th>
+                <th>Medida</th>
+                <th>Status</th>
 
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -58,18 +59,18 @@
                         <td>
                             <form action="{{ route('productos.destroy', $producto->id) }}" method="POST">
                                 @if ($front == "productos")
-                                    <a class="btn btn-sm btn-primary " href="{{ route('productos.show', $producto->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                    <a class="btn btn-sm btn-success" href="{{ route('productos.edit', $producto->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
+                                    <a class="btn btn-sm btn-outline-primary " href="{{ route('productos.show', $producto->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
+                                    <a class="btn btn-sm btn-outline-success" href="{{ route('productos.edit', $producto->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
                                     @if (Auth::user()->id_user_type == 1)
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>               
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>               
                                     @endif
                                 @endif                  
                                 @if ($front == "facturas")
                                     <button
                                         type="button"
-                                        class="btn btn-primary btn-sm add-to-list-btn" {{-- Clase para identificar con jQuery --}}
+                                        class="btn btn-outline-primary btn-sm add-to-list-btn" {{-- Clase para identificar con jQuery --}}
                                         data-product-id="{{ $producto->id }}"
                                         data-product-codigo="{{ $producto->codigo_producto }}"
                                         data-product-cantidad="{{ $producto->cantidad_producto }}"
@@ -101,7 +102,7 @@
                                             @endif 
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                                             
                                         </div>
                                     </div>
@@ -123,12 +124,5 @@
             @endforeach
         </tbody>
     </table>
-    @if ($productos->hasPages())
-            <tr class="bg-gray-50">
-                <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    
-                    {!! $productos->withQueryString()->links() !!}
-                </td>
-            </tr>
-    @endif
+    
 @endif

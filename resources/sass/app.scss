@@ -5,4 +5,33 @@
 @import 'variables';
 
 // Bootstrap
-@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/bootstrap'; 
+:root {
+    
+    --color-principal-background: #540E1F !important; 
+    --text-principal: #f7e3e3 !important;
+    
+    
+    --color-secundario-background: #c6a0aa !important; 
+    --text-secundario: #540E1F !important;
+
+    
+    --color-th-table-background: #f3e2e2 !important; 
+     --text-th-table: #540E1F !important;
+    
+}
+
+.color-principal {
+    background-color: var(--color-principal-background);
+    color: var(--text-principal); 
+}
+
+.table th,.table thead th {
+    background-color: var(--color-th-table-background);
+    color: var(--text-th-table); 
+}
+
+.color-secundario {
+    background-color: var(--color-secundario-background);
+    color: var(--text-secundario); 
+}

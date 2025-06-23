@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
+                <div class="card color-secundario">
                     <div class="card-header">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
@@ -17,7 +17,7 @@
                             </span>
 
                              <div class="float-right">
-                                <a href="{{ route('clientes.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                <a href="{{ route('clientes.create') }}" class="btn btn-outline-secondary btn-sm float-right"  data-placement="left">
                                   {{ __('Create New') }}
                                 </a>
                               </div>
@@ -36,11 +36,11 @@
                                     <tr>
                                         <th>No</th>
                                         
-									<th >Dni</th>
-									<th >Nombre</th>
-									<th >Apellido</th>
-									<th >Telefono</th>
-									<th >Correo</th>
+									    <th>Dni</th>
+									    <th>Nombre</th>
+									    <th>Apellido</th>
+									    <th>Telefono</th>
+									    <th>Correo</th>
 
                                         <th></th>
                                     </tr>
@@ -48,7 +48,7 @@
                                 <tbody>
                                     @foreach ($clientes as $cliente)
                                         <tr>
-                                            <td>{{ ++$i }}</td>
+                                            <td>{{ $cliente->id }}</td>
                                             
 										<td >{{ $cliente->dni }}</td>
 										<td >{{ $cliente->nombre }}</td>
@@ -58,12 +58,12 @@
 
                                             <td>
                                                 <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('clientes.show', $cliente->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('clientes.edit', $cliente->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
+                                                    <a class="btn btn-sm btn-outline-primary " href="{{ route('clientes.show', $cliente->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
+                                                    <a class="btn btn-sm btn-outline-success" href="{{ route('clientes.edit', $cliente->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
                                                     @if (Auth::user()->id_user_type == 1)
                                                          @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
 
                                                     @endif
                                                 </form>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
                 </div>
-                {!! $clientes->withQueryString()->links() !!}
+               
             </div>
         </div>
     </div>

@@ -8,13 +8,13 @@
     <section class="content container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card card-default color-secundario">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
                             <span class="card-title">{{ __('Show') }} Cliente</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-primary btn-sm" href="{{ route('clientes.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-light btn-sm" href="{{ route('clientes.index') }}"> {{ __('Back') }}</a>
                         </div>
                     </div>
 

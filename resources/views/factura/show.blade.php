@@ -8,30 +8,92 @@
     <section class="content container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card color-secundario">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
-                            <span class="card-title">{{ __('Show') }} Factura</span>
+                            <span class="card-title">{{ __('Add Producto') }} a factura</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-primary btn-sm" href="{{ route('facturas.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-light btn-sm" href="{{ route('facturas.index') }}"> {{ __('Back') }}</a>
                         </div>
                     </div>
 
                     <div class="card-body bg-white">
                         
                                 <div class="form-group mb-2 mb20">
-                                    <strong>Id Cliente:</strong>
-                                    {{ $factura->id_cliente }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Id Tipo Factura:</strong>
-                                    {{ $factura->id_tipo_factura }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Id Status Factura:</strong>
-                                    {{ $factura->id_status_factura }}
-                                </div>
+                                    <p class="fw-bold fs-2 text-danger">
+                                        N° Factura:
+                                        <strong> {{ $factura->id }}</strong>
+                                        
+                                    </p>
+                                
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group mb-2 mb20">
+                                            <strong>Cliente:</strong>
+                                            {{ $factura->cliente->dni }} {{ $factura->cliente->nombre }} {{ $factura->cliente->apellido }}
+                                        </div>
+                                        <div class="form-group mb-2 mb20">
+                                            <strong>Teléfono:</strong>
+                                            {{ $factura->cliente->telefono}}
+                                        </div>
+                                        <div class="form-group mb-2 mb20">
+                                            <strong>Correo:</strong>
+                                            {{ $factura->cliente->correo}}
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col">
+                                        <div class="form-group mb-2 mb20">
+                                            <strong>Status:</strong>
+                                            {{ $factura->statusFactura->descripcion_status_factura}} 
+                                        </div>
+                                        <div class="form-group mb-2 mb20">
+                                            <strong>Tipo:</strong>
+                                            {{ $factura->tipoFactura->descripcion_tipo_factura}} 
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                           <i class="bi bi-search"></i>
+                                            </button>
+                                            
+                                            
+                                        </div>
+                                    </div>
+
+                                </div> 
+                            </div> 
+
+                            <div class="card-body bg-white">
+                        
+                                <form method="POST" action="{{ route('detalles-facturas.store') }}"  role="form" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="idFactura" value=" {{ $factura->id }}">
+                                    <input type="hidden" name="tipoFactura" value=" {{ $factura->id_tipo_factura }}">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Codigo</th>
+                                                <th>Descripcion</th>
+                                                <th>Cantidad</th> {{-- Puedes añadir una columna para cantidad --}}
+                                                <th>Monto</th> {{-- Puedes añadir una columna para cantidad --}}
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="selected-products-body">
+                                            <!-- Aquí se añadirán las filas de productos dinámicamente -->
+                                        </tbody>
+                                    </table>
+
+                                    <div class="col-md-12 mt20 mt-2">
+                                        <button type="submit" class="btn btn-outline-primary">{{ __('Procesar') }}</button>
+                                    </div>
+                                </form>
+                     
+                            </div>
 
                                 @if ($errors->any())
                                     <div class="alert alert-danger">
@@ -49,82 +111,46 @@
         </div>
     </section>
 
-    <section class="content container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <div class="float-left">
-                            <span class="card-title">{{ __('Lista de') }} Productos</span>
-                        </div>
-                        
-                    </div>
-
-                    <div class="card-body bg-white">
-                        
-                        <form method="POST" action="{{ route('detalles-facturas.store') }}"  role="form" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="idFactura" value=" {{ $factura->id }}">
-                            <input type="hidden" name="tipoFactura" value=" {{ $factura->id_tipo_factura }}">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Codigo</th>
-                                        <th>Descripcion</th>
-                                        <th>Cantidad</th> {{-- Puedes añadir una columna para cantidad --}}
-                                        <th>Monto</th> {{-- Puedes añadir una columna para cantidad --}}
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="selected-products-body">
-                                    <!-- Aquí se añadirán las filas de productos dinámicamente -->
-                                </tbody>
-                            </table>
-
-                            <div class="col-md-12 mt20 mt-2">
-                                <button type="submit" class="btn btn-primary">{{ __('Procesar') }}</button>
+    <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Buscar producto para factura</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="buscar-producto" method="post">
+            <input type="text" id="search-term" class="form-control" placeholder="Buscar producto" autofocus>
+                                                
+        </form>
+        <div id="loading-message">
+                                <div class="d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
-                        
-                                
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+       <div id="search-results"></div>
 
-    <section class="content container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <div class="float-left">
-                            <span class="card-title">{{ __('Add') }} Productos</span>
-                        </div>
-                        <div class="float-right">
-                            <div class="input-group mb-3">
-                                <form id="buscar-producto" method="post">
-                                    <input type="text" id="search-term" class="form-control" placeholder="Buscar producto" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                    
-                                </form>
-                                
-                            </div>
-                        </div>
-                    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
 
-                    <div class="card-body bg-white">
-                        <div id="search-results">Resultados:</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
+
+    
 
     
     <script>
         $(document).ready(function() {
+            $('#loading-message').hide();
             $('#search-term').on('keyup', function() {
             var searchTerm = $(this).val();
                 
@@ -135,7 +161,12 @@
                     front:"facturas"
 
                  },
+                    beforeSend: function() {
+                        $('#loading-message').show(); 
+                        
+                    },
                 success: function(response) {
+                    $('#loading-message').hide();
                 $('#search-results').html(response);
                 }
             });

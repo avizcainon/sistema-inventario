@@ -83,10 +83,14 @@ class DetallesFacturaController extends Controller
                         default:
                             echo "valor ineseperado";
                     }
+                    //
+                    $factura = Factura::find($id_factura);
+                    $factura->id_status_factura = 2;
+                    $factura->save();
                     
                 }
             }
-      $detallesFacturas = DetallesFactura::where('id_factura', $id_factura)->get();
+        $detallesFacturas = DetallesFactura::with('producto')->where('id_factura', $id_factura)->get();
         $factura = Factura::with('cliente')->with('statusFactura')->with('tipoFactura')->where('facturas.id', $id_factura)->first();
 
         return view('detalles-factura.show', compact('detallesFacturas','factura'));

@@ -10,13 +10,13 @@
 <section class="content container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card color-secundario">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
                             <span class="card-title">{{ __('Detalles') }} Factura</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-primary btn-sm" href="{{ route('facturas.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-primary btn-sm" href="{{ route('facturas.index') }}"> {{ __('Back') }}</a>
                         </div>
                     </div>
 
@@ -59,12 +59,12 @@
                                 </div>
                   
                            <table class="table table-striped table-hover">
-                                <thead class="thead">
-                                    <tr>
-                                        <th >Cantidad </th>
-                                        <th >Producto </th>  
-									    <th >Monto</th>
-									    <th >Monto total</th>
+                                <thead class="thead color-secundario">
+                                    <tr class="color-secundario">
+                                        <th class="color-secundario">Cantidad </th>
+                                        <th class="color-secundario">Producto </th>  
+									    <th class="color-secundario">Monto</th>
+									    <th class="color-secundario">Monto total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,7 +72,7 @@
                                         <tr>
                                             <td >{{ $detallesFactura->cantidad_producto_factura }}</td>
                                             <td>
-                                                {{ $detallesFactura->id_producto }}
+                                                {{ $detallesFactura->producto->codigo_producto }} {{ $detallesFactura->producto->descripcion_producto }}
                                             </td>
                                             <td >
                                                 {{ $detallesFactura->monto_producto_factura }}

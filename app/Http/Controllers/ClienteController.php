@@ -22,10 +22,9 @@ class ClienteController extends Controller
      */
     public function index(Request $request): View
     {
-        $clientes = Cliente::paginate();
+        $clientes = Cliente::get();
 
-        return view('cliente.index', compact('clientes'))
-            ->with('i', ($request->input('page', 1) - 1) * $clientes->perPage());
+        return view('cliente.index', compact('clientes'));
     }
 
     /**
@@ -93,22 +92,21 @@ class ClienteController extends Controller
      */
     public function buscar(Request $request)
     {
-        
-         
-        $searchTerm = $request->input('id_cliente');
-        $front = $request->front;
-       Log::info('Search Term recibido:', ['searchTerm' => $searchTerm]);
 
-        if (empty($searchTerm)) {
-            $clientes = collect(); // Devuelve una colección vacía
-        } else {
-            
-            $clientes = Cliente::where('dni', 'LIKE', '%' . $searchTerm . '%') 
-                                 ->orWhere('nombre', 'LIKE', '%' . $searchTerm . '%')
-                                 ->get();
+        try {
+            $searchTerm = $request->input('id_cliente');
+            $front = $request->front;
+            if (empty($searchTerm)) {
+                $clientes = collect(); 
+            } else {
+                $clientes = Cliente::where('dni', 'LIKE', '%' . $searchTerm . '%') 
+                                    ->orWhere('nombre', 'LIKE', '%' . $searchTerm . '%')
+                                    ->get();
+            }
+        } catch (\Throwable $th) {
+           return back()->withErrors(['error' => $th->getMessage()]);
         }
-        Log::info('*********************************************************:', ['clientes_data' => $clientes->toArray()]);
-        
+
         return view('cliente.item_cliente', compact('clientes','front'));
     }
 }
