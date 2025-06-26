@@ -24,7 +24,7 @@
     <div id="app">
         <nav class="navbar color-principal"  data-bs-theme="light">
             <div class="container">
-                <a class="navbar-brand color-principal" href="{{ url('/home') }}">
+                <a class="navbar-brand color-principal font-titulo fs-2" href="{{ url('/home') }}">
                     {{ config('app.name', 'Shop') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">

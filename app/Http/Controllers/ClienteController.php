@@ -39,13 +39,26 @@ class ClienteController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\ClienteRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(ClienteRequest $request): RedirectResponse
     {
-        Cliente::create($request->validated());
+        try {
+            Cliente::create($request->validated());
+            
+            // Si todo fue exitoso, redirige con mensaje de éxito
+            return Redirect::route('clientes.index')
+                ->with('success', 'Cliente creado exitosamente.');
 
-        return Redirect::route('clientes.index')
-            ->with('success', 'Cliente created successfully.');
+        } catch (\Throwable $th) {
+            Log::error("Error al crear cliente: " . $th->getMessage());
+            
+            // Redirige de vuelta con los errores y mantiene los inputs anteriores
+            // El error se pasará bajo la clave 'errors' (tal como lo has definido)
+            return back()->withInput()->withErrors(['errors' => $th->getMessage()]);
+        }
     }
 
     /**
@@ -104,7 +117,7 @@ class ClienteController extends Controller
                                     ->get();
             }
         } catch (\Throwable $th) {
-           return back()->withErrors(['error' => $th->getMessage()]);
+           return back()->withErrors(['errors' => $th->getMessage()]);
         }
 
         return view('cliente.item_cliente', compact('clientes','front'));

@@ -5,7 +5,10 @@
     <table class="table table-striped table-hover">
         <thead class="thead">
             <tr>
-                                      
+                @if ($front == "facturas")
+                    <th></th> 
+                @endif
+                                     
                 <th>Imagen </th>  
                 <th>Codigo </th>
                 <th>Descripcion</th>
@@ -26,6 +29,22 @@
             @foreach ($productos as $producto)
                 {{ $producto->status_productos }}
                     <tr>
+                        
+                            @if ($front == "facturas")
+                            <td>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary btn-sm add-to-list-btn" {{-- Clase para identificar con jQuery --}}
+                                        data-product-id="{{ $producto->id }}"
+                                        data-product-codigo="{{ $producto->codigo_producto }}"
+                                        data-product-cantidad="{{ $producto->cantidad_producto }}"
+                                        data-product-monto="{{ $producto->monto_producto_venta }}"
+                                        data-product-descripcion="{{ $producto->descripcion_producto ?? 'N/A' }}">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </button>
+                                     </td>
+                                @endif
+                       
                         <td>
                             @if ($producto->imagen_producto)
                                 @if(str_starts_with($producto->imagen_producto, 'https') || str_starts_with($producto->imagen_producto, 'http'))
@@ -59,26 +78,15 @@
                         <td>
                             <form action="{{ route('productos.destroy', $producto->id) }}" method="POST">
                                 @if ($front == "productos")
-                                    <a class="btn btn-sm btn-outline-primary " href="{{ route('productos.show', $producto->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                    <a class="btn btn-sm btn-outline-success" href="{{ route('productos.edit', $producto->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
+                                    <a class="btn btn-sm btn-outline-primary " href="{{ route('productos.show', $producto->id) }}"><i class="bi bi-eye"></i> </a>
+                                    <a class="btn btn-sm btn-outline-success" href="{{ route('productos.edit', $producto->id) }}"><i class="bi bi-pencil-square"></i> </a>
                                     @if (Auth::user()->id_user_type == 1)
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>               
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="bi bi-trash"></i> </button>               
                                     @endif
                                 @endif                  
-                                @if ($front == "facturas")
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-primary btn-sm add-to-list-btn" {{-- Clase para identificar con jQuery --}}
-                                        data-product-id="{{ $producto->id }}"
-                                        data-product-codigo="{{ $producto->codigo_producto }}"
-                                        data-product-cantidad="{{ $producto->cantidad_producto }}"
-                                        data-product-monto="{{ $producto->monto_producto_venta }}"
-                                        data-product-descripcion="{{ $producto->descripcion_producto ?? 'N/A' }}">
-                                        Agregar
-                                    </button>
-                                @endif
+                                
                                                         
                             </form>
                         </td>

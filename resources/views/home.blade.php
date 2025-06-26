@@ -21,8 +21,8 @@
                                 
                                 <div class="col">
                                     <a href="{{ route('productos.index') }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                                        <h5 class="card-title text-secondary"> Productos</h5>
-                                        <p class="card-text fs-3 fw-bold text-warning">{{ $totalProductos }}</p>
+                                        <h5 class="card-title text-secondary fs-3"> <i class="bi bi-patch-check"></i></h5>
+                                        <p class="card-text fs-3 fw-bold text-info">{{ $totalProductos }}</p>
                                     </a>
                                      
                                                                     
@@ -33,8 +33,8 @@
 
                                 <div class="col">
                                     <a href="{{ route('clientes.index') }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                                        <h5 class="card-title text-secondary">  Clientes</h5>
-                                    <p class="card-text fs-3 fw-bold text-warning">{{ $totalClientes }}</p>
+                                        <h5 class="card-title text-secondary fs-3">  <i class="bi bi-person-fill"></i></h5>
+                                    <p class="card-text fs-3 fw-bold text-info">{{ $totalClientes }}</p>
                                     </a>
                                     
                                                                     
@@ -50,8 +50,8 @@
                             <div class="row">
                                 <div class="col">
                                     <a href="{{ route('facturas.index') }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                                        <h5 class="card-title text-secondary"> Facturas</h5>
-                                        <p class="card-text fs-3 fw-bold text-warning">{{ $totalFacturas }}</p> 
+                                        <h5 class="card-title text-secondary fs-3"> <i class="bi bi-journal"></i></h5>
+                                        <p class="card-text fs-3 fw-bold text-info">{{ $totalFacturas }}</p> 
                                     </a>
                                                                       
                                 </div>

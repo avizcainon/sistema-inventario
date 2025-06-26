@@ -17,7 +17,7 @@
                             <span class="card-title">{{ __('Create') }} Cliente</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('clientes.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('clientes.index') }}"> <i class="bi bi-arrow-return-left"></i></a>
                         </div>
                     </div>
                     <div class="card-body bg-white">
@@ -27,6 +27,7 @@
                             @include('cliente.form')
 
                         </form>
+                       
                     </div>
                 </div>
             </div>

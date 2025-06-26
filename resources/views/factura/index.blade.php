@@ -17,8 +17,8 @@
                             </span>
 
                              <div class="float-right">
-                                <a href="{{ route('facturas.create') }}" class="btn btn-outline-light btn-sm float-right"  data-placement="left">
-                                  {{ __('Create New') }}
+                                <a href="{{ route('facturas.create') }}" class="btn btn-outline-dark btn-sm float-right"  data-placement="left">
+                                 <i class="bi bi-file-earmark-plus"></i>
                                 </a>
                               </div>
                         </div>
@@ -68,13 +68,13 @@
                                                          @csrf
                                                         @method('DELETE')
                                                        
-                                                        <a class="btn btn-sm btn-outline-primary " href="{{ route('facturas.show', $factura->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
+                                                        <a class="btn btn-sm btn-outline-primary " href="{{ route('facturas.show', $factura->id) }}"><i class="bi bi-eye"></i></a>
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="bi bi-trash"></i></button>
                                                        
                                                         
                                                       @else
                                                         @if ($factura->statusFactura->id == 1)
-                                                            <a class="btn btn-sm btn-outline-primary " href="{{ route('facturas.show', $factura->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
+                                                            <a class="btn btn-sm btn-outline-primary " href="{{ route('facturas.show', $factura->id) }}"><i class="bi bi-eye"></i></a>
                                                             
                                                         @endif
 
@@ -83,7 +83,7 @@
                                                     
 
 
-                                                    <a class="btn btn-sm btn-outline-secondary " href="{{ route('detalles-facturas.show', $factura->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Detalle') }}</a>
+                                                    <a class="btn btn-sm btn-outline-secondary " href="{{ route('detalles-facturas.show', $factura->id) }}"><i class="bi bi-card-list"></i></a>
                                                     
                                                 </form>
                                             </td>

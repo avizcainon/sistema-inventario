@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductoRequest extends FormRequest
 {
@@ -22,7 +23,7 @@ class ProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'codigo_producto' => 'required|string',
+			'codigo_producto' => ['required', 'string', Rule::unique('productos', 'codigo_producto')],
 			'descripcion_producto' => 'required|string',
             'imagen_producto' => 'nullable|image',
 			'cantidad_producto' => 'required',
@@ -30,6 +31,19 @@ class ProductoRequest extends FormRequest
 			'monto_producto_venta' => 'required',
 			'medida_producto' => 'required|string',
 			'id_status_producto' => 'required',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'codigo_producto.unique' => 'El código ingresado ya está registrado. Por favor, utilice uno diferente.',
+           
         ];
     }
 }

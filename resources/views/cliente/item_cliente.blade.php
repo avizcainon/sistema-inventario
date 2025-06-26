@@ -38,7 +38,7 @@
                                 data-client-nombre="{{ $cliente->nombre }}"
                                 data-client-apellido="{{ $cliente->apellido }}">
                                 
-                                Seleccionar
+                               <i class="bi bi-plus-circle"></i>
                             </button>
                         </form>
                     </td>

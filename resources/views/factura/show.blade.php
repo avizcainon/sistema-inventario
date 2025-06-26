@@ -14,7 +14,7 @@
                             <span class="card-title">{{ __('Add Producto') }} a factura</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-outline-light btn-sm" href="{{ route('facturas.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-light btn-sm" href="{{ route('facturas.index') }}"> <i class="bi bi-arrow-return-left"></i></a>
                         </div>
                     </div>
 
@@ -89,7 +89,7 @@
                                     </table>
 
                                     <div class="col-md-12 mt20 mt-2">
-                                        <button type="submit" class="btn btn-outline-primary">{{ __('Procesar') }}</button>
+                                        <button type="submit" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i></button>
                                     </div>
                                 </form>
                      
@@ -221,7 +221,7 @@ $(document).ready(function() {
                     <input type="hidden" name="detalles_factura[${productId}][monto_producto_factura]" class="form-control form-control-sm product-quantity" value="${productMonto}" >
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm remove-from-list-btn" data-product-id="${productId}">Eliminar</button>
+                    <button type="button" class="btn btn-danger btn-sm remove-from-list-btn" data-product-id="${productId}"><i class="bi bi-trash"></i></button>
                 </td>
             </tr>
         `;
@@ -231,7 +231,7 @@ $(document).ready(function() {
 
         // Opcional: Deshabilitar el botón "Agregar" para este producto en la lista de búsqueda
         // para evitar añadirlo múltiples veces si el usuario no actualiza la búsqueda.
-        $(this).prop('disabled', true).text('Agregado');
+       $(this).prop('disabled', true).html('<i class="bi bi-check-lg"></i> ');
         $("#search-term").val("");
         // Opcional: Incrementar el contador si lo usas para nombres de inputs secuenciales
         // productCounter++;

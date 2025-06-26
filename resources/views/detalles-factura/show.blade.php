@@ -16,7 +16,7 @@
                             <span class="card-title">{{ __('Detalles') }} Factura</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ route('facturas.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-light btn-sm" href="{{ route('facturas.index') }}"> <i class="bi bi-arrow-return-left"></i></a>
                         </div>
                     </div>
 

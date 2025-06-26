@@ -17,7 +17,7 @@
                              <span class="card-title">{{ __('Create') }} Producto</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('productos.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('productos.index') }}"> <i class="bi bi-arrow-return-left"></i></a>
                         </div>
 
 
@@ -30,15 +30,7 @@
                             @include('producto.form')
 
                         </form>
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li><strong>Error al registrar producto: </strong>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                        
                     </div>
                 </div>
             </div>
