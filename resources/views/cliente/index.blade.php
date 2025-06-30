@@ -23,42 +23,31 @@
                               </div>
                         </div>
                     </div>
-                    @if ($message = Session::get('success'))
-                    <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                {{ $message }}
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
+                    
+                    @if (session('success'))
+
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        
-                        <div class="alert alert-success m-4">
-                            <p>{{ $message }}</p>
-                        </div>
+                    
                     @endif
 
-                    @if ($errors->any())
-                    <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                               <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li><strong>Error al registrar producto: </strong>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
+                    @if ($errors->any() || session('error'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           @if (session('error'))
+                                        <p>{{ session('error') }}</p> {{-- ¡Esta línea mostrará el mensaje de conexión! --}}
+                                    @endif
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li><strong>Error al registrar cliente: </strong>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li><strong>Error al registrar producto: </strong>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+
+                        
+                    @endif
 
                     <div class="card-body bg-white">
                         <div class="table-responsive">
