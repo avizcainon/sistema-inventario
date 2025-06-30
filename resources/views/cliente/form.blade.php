@@ -1,6 +1,6 @@
 <div class="row padding-1 p-1">
     <div class="col-md-12">
-        
+
         <div class="form-group mb-2 mb20">
             <label for="dni" class="form-label">{{ __('Dni') }}</label>
             <input type="text" name="dni" class="form-control @error('dni') is-invalid @enderror" value="{{ old('dni', $cliente?->dni) }}" id="dni" autocomplete="off" placeholder="Dni">
@@ -23,12 +23,31 @@
         </div>
         <div class="form-group mb-2 mb20">
             <label for="correo" class="form-label">{{ __('Correo') }}</label>
-            <input type="text" name="correo" class="form-control @error('correo') is-invalid @enderror" value="{{ old('correo', $cliente?->correo) }}" id="correo"  placeholder="Correo">
+            <input type="text" name="correo" class="form-control @error('correo') is-invalid @enderror" value="{{ old('correo', $cliente?->correo) }}" id="correo" placeholder="Correo">
             {!! $errors->first('correo', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 
     </div>
     <div class="col-md-12 mt20 mt-2">
-        <button type="submit" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i></button>
+        <button type="submit" class="btn btn-outline-dark"><i class="bi bi-plus-circle"></i></button>
     </div>
+
+    @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 class="alert-heading">¡Error!</h5>
+        <p>Hubo un problema al procesar tu solicitud:</p>
+        <ul>
+            {{-- Accede a los errores pasados con la clave 'errors' --}}
+            @if ($errors->has('errors'))
+                <li>{{ $errors->first('errors') }}</li>
+            @else
+                {{-- Esto capturaría otros errores de validación si los hubiera --}}
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+            @endif
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 </div>

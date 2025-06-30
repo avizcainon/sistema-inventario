@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
 
+
 class ClienteController extends Controller
 {
     public function __construct()
     {
-        
+
         $this->middleware('auth')->except('logout');
     }
     /**
@@ -43,23 +44,17 @@ class ClienteController extends Controller
      * @param  \App\Http\Requests\ClienteRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(ClienteRequest $request): RedirectResponse
-    {
-        try {
-            Cliente::create($request->validated());
-            
-            // Si todo fue exitoso, redirige con mensaje de éxito
-            return Redirect::route('clientes.index')
-                ->with('success', 'Cliente creado exitosamente.');
-
-        } catch (\Throwable $th) {
-            Log::error("Error al crear cliente: " . $th->getMessage());
-            
-            // Redirige de vuelta con los errores y mantiene los inputs anteriores
-            // El error se pasará bajo la clave 'errors' (tal como lo has definido)
-            return back()->withInput()->withErrors(['errors' => $th->getMessage()]);
-        }
+   public function store(ClienteRequest $request): RedirectResponse
+{
+    try {
+        Cliente::create($request->validated());
+        return Redirect::route('clientes.index')->with('success', 'Cliente creado exitosamente.');
+   
+    } catch (\Throwable $th) { // <-- Captura otras excepciones
+        Log::error("Error al crear cliente: " . $th->getMessage());
+        return back()->withInput()->withErrors(['errors' => $th->getMessage()]); // <-- Pasa el error como 'errors' en el ViewErrorBag
     }
+}
 
     /**
      * Display the specified resource.
@@ -86,18 +81,33 @@ class ClienteController extends Controller
      */
     public function update(ClienteRequest $request, Cliente $cliente): RedirectResponse
     {
-        $cliente->update($request->validated());
 
-        return Redirect::route('clientes.index')
-            ->with('success', 'Cliente updated successfully');
+        try {
+            $cliente->update($request->validated());
+
+            
+            return Redirect::route('clientes.index')
+                ->with('success', 'Cliente updated successfully');
+        } catch (\Throwable $th) {
+            Log::error("Error al actualizar cliente: " . $th->getMessage());
+
+            return back()->withInput()->withErrors(['errors' => $th->getMessage()]);
+        }
     }
 
     public function destroy($id): RedirectResponse
     {
-        Cliente::find($id)->delete();
 
-        return Redirect::route('clientes.index')
-            ->with('success', 'Cliente deleted successfully');
+        try {
+            Cliente::find($id)->delete();
+
+            return Redirect::route('clientes.index')
+                ->with('success', 'Cliente deleted successfully');
+        } catch (\Throwable $th) {
+            Log::error("Error al eliminar cliente: " . $th->getMessage());
+
+            return back()->withInput()->withErrors(['errors' => $th->getMessage()]);
+        }
     }
 
     /**
@@ -110,16 +120,16 @@ class ClienteController extends Controller
             $searchTerm = $request->input('id_cliente');
             $front = $request->front;
             if (empty($searchTerm)) {
-                $clientes = collect(); 
+                $clientes = collect();
             } else {
-                $clientes = Cliente::where('dni', 'LIKE', '%' . $searchTerm . '%') 
-                                    ->orWhere('nombre', 'LIKE', '%' . $searchTerm . '%')
-                                    ->get();
+                $clientes = Cliente::where('dni', 'LIKE', '%' . $searchTerm . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $searchTerm . '%')
+                    ->get();
             }
         } catch (\Throwable $th) {
-           return back()->withErrors(['errors' => $th->getMessage()]);
+            return back()->withErrors(['errors' => $th->getMessage()]);
         }
 
-        return view('cliente.item_cliente', compact('clientes','front'));
+        return view('cliente.item_cliente', compact('clientes', 'front'));
     }
 }

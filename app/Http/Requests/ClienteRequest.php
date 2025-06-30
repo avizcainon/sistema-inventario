@@ -22,7 +22,7 @@ class ClienteRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+         $rules = [
 			##'dni' => ['required', 'string', Rule::unique('clientes', 'dni')],
 			'nombre' => 'required|string',
 			'apellido' => 'required|string',
@@ -41,7 +41,7 @@ class ClienteRequest extends FormRequest
             // Para el DNI: debe ser único, PERO ignorar el DNI del cliente que estamos editando.
             // $this->route('cliente') obtiene la instancia del modelo Cliente inyectada por la ruta.
             // Si tu parámetro de ruta no se llama 'cliente', cámbialo por el nombre correcto (ej. $this->route('id') si pasas solo el ID).
-            $rules['dni'] = ['required', 'string', 'max:20', Rule::unique('clientes', 'dni')->ignore($this->route('cliente'))];
+            $rules['dni'] = ['required', 'string', Rule::unique('clientes', 'dni')->ignore($this->route('cliente'))];
 
         }
 

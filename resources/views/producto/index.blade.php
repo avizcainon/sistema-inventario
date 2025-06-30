@@ -35,20 +35,33 @@
 
                     <div class="card-body bg-white">
                         @if ($message = Session::get('success'))
-
-                        <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                {{ $message }}
+                            <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                    {{ $message }}
+                                    </div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                                 </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                             </div>
-                        </div>
-
-
-                
-                    @endif
-                       
+                        @endif
+                       @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <h4 class="alert-heading">¡Error!</h4>
+                                <p>Hubo un problema al procesar tu solicitud:</p>
+                                <ul>
+                                    {{-- Accede a los errores pasados con la clave 'errors' --}}
+                                    @if ($errors->has('errors'))
+                                        <li>{{ $errors->first('errors') }}</li>
+                                    @else
+                                        {{-- Esto capturaría otros errores de validación si los hubiera --}}
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    @endif
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
 
 
 

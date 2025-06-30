@@ -22,7 +22,7 @@ class ProductoRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+         $rules = [
 			##'codigo_producto' => ['required', 'string', Rule::unique('productos', 'codigo_producto')],
 			'descripcion_producto' => 'required|string',
             'imagen_producto' => 'nullable|image',
